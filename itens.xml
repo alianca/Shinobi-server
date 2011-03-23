@@ -1,22 +1,12 @@
 ﻿<?xml version="1.0" enconding="UTF-8" ?>
 <itens dir="shinobi_ex" >
 	<item>
-		<endereco>cabelo_kakashi.swf</endereco>
-		<cores>
-			<cor>0xFF00FF</cor>
-			<cor>0xFF0000</cor>
-		</cores>
+		cabelo_kakashi.swf
 	</item>
 	<item>
-		<endereco>cabelo_ichigo.swf</endereco>
-		<cores>
-			<cor>0x00FF00</cor>
-		</cores>
+		cabelo_ichigo.swf
 	</item>
 	<item>
-		<endereco>cabelo_shikamaru.swf</endereco>
-		<cores>
-			<cor>0x0000FF</cor>
-		</cores>
+		cabelo_shikamaru.swf
 	</item>
 </itens>

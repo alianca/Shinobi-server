@@ -9,8 +9,9 @@
 	public class ItensContainer extends MovieClip
 	{
 		private var loader:URLLoader;
+		private var requisicao:URLRequest;
 		private var lista:XML;
-		private var itens:Item;
+		private var itens:Array = [];
 		private var stageItem:Item;
 
 		private var x_offset:int = 10;
@@ -18,14 +19,19 @@
 		private var default_width:Number = 80;
 		private var default_height:Number = 80;
 		private var border:uint = 10;
+		private var cor:uint;
 
 		public function ItensContainer(end:String="itens")
 		{
 			// constructor code
-			var requisicao:URLRequest = new URLRequest(end + ".xml");
-			loader = new URLLoader();
+			requisicao = new URLRequest(end + ".xml");
+			loader = new URLLoader();			
 			loader.addEventListener(Event.COMPLETE ,completeDownload);
 			loader.load(requisicao);
+		}
+		public function setDefaultColor(novaCor:uint):void
+		{
+			cor = novaCor;
 		}
 		private function completeDownload(e:Event):void
 		{
@@ -44,12 +50,16 @@
 			if(stageItem != null)
 				stage.removeChild(stageItem);
 			stage.addChild(item);
+			item.changeColor(cor);
 			stageItem = item;
 		}
 		private function placeItemMenu(item:Item):void
 		{
 			var scale:Number;
 			// Posicionamento
+			var quadro:DisplayObject = item.getChildByName("quadro");
+			quadro.x=0;
+			quadro.y=0;
 			item.x = x_offset;
 			item.y = y_offset;
 			// Redimensionamento
@@ -69,42 +79,36 @@
 			x_offset +=  item.width + border;
 			// Inclui o objeto
 			addChild(item);
+			item.changeColor(cor);
+			itens.push(item);
+			setItemDefault();
 			item.addEventListener(MouseEvent.CLICK,setItem);
+		}
+		public function setItemDefault():void
+		{
+			var loader = new ItemLoader();
+			loader.addUrl(itens[0].getUrl());
+			loader.Load(placeItem);
 		}
 		public function setItem(evt:Event):void
 		{
-			//stage.removeChild(getChildAt(2));
 			var tempItem:Item = evt.target.parent.parent;
 			var loader = new ItemLoader();
 			loader.addUrl(tempItem.getUrl());
 			loader.Load(placeItem);
-
 		}
-		public function changeColors(evt:Event):void
+		
+		public function changeColors(novaCor:uint):void
 		{
-			var cor_box:DisplayObject;
-			var cores:Array = evt.target.parent.parent.getColors();
-			var i:uint = 1;
-			for each (var cor:uint in cores)
+			cor = novaCor;
+			for each (var item:Item in itens)
 			{
-				if(getChildByName("cor"+i))
-				{
-					cor_box = getChildByName("cor"+i);
-					cor_box.visible = true;
-					var corT:ColorTransform = cor_box.transform.colorTransform;
-					corT.color = cor;
-					cor_box.transform.colorTransform = corT;
-				}
-				i++;
+				item.changeColor(novaCor);
 			}
-			for(i;i<=4;i++)
+			if(stageItem)
 			{
-				if(getChildByName("cor"+i))
-				{
-					getChildByName("cor"+i).visible = false;
-				}
+				stageItem.changeColor(novaCor);
 			}
-
 		}
 
 	}

@@ -25,17 +25,10 @@
 		}
 		public function addEndereco(dir:String,xml:XML):void
 		{
-			
 			// Adiciona as cores
-			url = dir + xml.endereco;
+			//trace("url: "+xml);
+			url = dir + xml;
 			item = new Item(url);
-			
-			for each (var string_cor:String in xml.cores.cor)
-			{
-				var nova_cor:uint = uint(string_cor);
-				item.addColor(nova_cor);
-			}
-			
 		}
 		public function Load(listener:Function):void
 		{
@@ -49,10 +42,9 @@
 			//movie.quadro.x =0;
 			//movie.quadro.y =0;
 			item.addChild(movie.quadro);
+			item.addMov(movie.quadro);
 			removeEventListener(Event.COMPLETE,completeDownload);
 			callback(item);
 		}
 	}
-
-	
 }

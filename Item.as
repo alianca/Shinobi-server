@@ -7,35 +7,26 @@
 	
 	public class Item extends MovieClip
 	{
-		private var cores:Array = [];
+		private var cor:MovieClip;
 		private var url:String;
 		
 		public function Item(endereco:String)
 		{
 			super();
 			url = endereco;
+			cor=null;
 		}
-		public function addColor(cor:uint):void
+		public function addMov(mov:MovieClip):void
 		{
-			cores.push(cor);
+			cor = mov.cor_ins;
 		}
-		public function getColors():Array
+		public function changeColor(novaCor:uint):void
 		{
-			return cores;
-		}
-		public function getColor(numColor:uint):uint
-		{
-			return cores[numColor];
-		}
-		public function getNumColors():uint
-		{
-			return cores.size();
-		}
-		public function changeColor(numColor:uint):void
-		{
-			var cor:ColorTransform = transform.colorTransform;
-			cor.color = cores[numColor];
-			transform.colorTransform = cor;
+			//trace(MovieClip(this.getChildAt(0)).getChildByName("cor_ins"));
+			//var obj:DisplayObject = MovieClip(this.getChildAt(0)).getChildByName("cor_ins")
+			var corT:ColorTransform = cor.transform.colorTransform;
+			corT.color = novaCor;
+			cor.transform.colorTransform = corT;
 		}
 		public function getUrl():String
 		{
