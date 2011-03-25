@@ -14,11 +14,11 @@
 		private var itens:Array = [];
 		private var stageItem:Item;
 
-		private var x_offset:int = 10;
-		private var y_offset:int = 10;
-		private var default_width:Number = 80;
-		private var default_height:Number = 80;
-		private var border:uint = 10;
+		private var x_offset:int = 0;
+		private var y_offset:int = 0;
+		private var default_width:Number = 72.5;
+		private var default_height:Number = 72.5;
+		private var border:uint = 0;
 		private var cor:uint;
 
 		public function ItensContainer(end:String="itens")
@@ -76,7 +76,8 @@
 				item.scaleY = scale;
 			}
 			// Ajustes na iteracao
-			x_offset +=  item.width + border;
+			//x_offset +=  item.width + border;
+			x_offset += 72.5
 			// Inclui o objeto
 			addChild(item);
 			item.changeColor(cor);
