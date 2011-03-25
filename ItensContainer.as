@@ -47,11 +47,13 @@
 		}
 		private function placeItem(item:Item):void
 		{
+			var preview:MovieClip = MovieClip(MovieClip(stage.getChildAt(0)).getChildByName("char_preview"));
 			if(stageItem != null)
-				stage.removeChild(stageItem);
-			stage.addChild(item);
+				preview.removeChild(stageItem);
+			preview.addChild(item);
 			item.changeColor(cor);
 			stageItem = item;
+			
 		}
 		private function placeItemMenu(item:Item):void
 		{
@@ -77,11 +79,15 @@
 			}
 			// Ajustes na iteracao
 			//x_offset +=  item.width + border;
-			x_offset += 72.5
+			//x_offset += 72.5;
 			// Inclui o objeto
-			addChild(item);
-			item.changeColor(cor);
 			itens.push(item);
+			var slot = getChildByName("slot"+itens.length);
+			slot.addChild(item);
+			
+			// Mudanças no Objeto
+			item.changeColor(cor);
+			
 			setItemDefault();
 			item.addEventListener(MouseEvent.CLICK,setItem);
 		}
