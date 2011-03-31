@@ -21,7 +21,7 @@
 		private var border:uint = 0;
 		private var cor:uint;
 
-		public function ItensContainer(end:String="itens")
+		public function ItensContainer(end:String="xmls/itens")
 		{
 			// constructor code
 			requisicao = new URLRequest(end + ".xml");

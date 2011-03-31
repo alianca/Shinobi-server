@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" enconding="UTF-8" ?>
+<vilas>
+<vilaOculta>
+	<id>1</id>
+	<nome>Pais do Fogo</nome>
+	<imagem>vila_fogo.jpg</imagem>
+	<simbolo>sim_fogo.jpg</simbolo>
+	<descricao>ola</descricao>
+	<num_ninjas>10</num_ninjas>
+</vilaOculta>
+<vilaOculta>
+	<id>2</id>
+	<nome>Pais do Maça</nome>
+	<imagem>shinobi_ex/vila_fogo.jpg</imagem>
+	<simbolo>opa</simbolo>
+	<descricao>Os ninjas do pais da Maça é que nem a torcida do Paraná, todos sabem que existem mas ninguém viu um.</descricao>
+	<num_ninjas>2</num_ninjas>
+	</vilaOculta>
+</vilas>
