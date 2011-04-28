@@ -2,22 +2,22 @@ var http = require('http');
 var parse_url = require('url').parse;
 var users = require('./users');
 
+var actions = {
+    '/signup' : users.create,
+    '/auth' : users.authenticate
+}
+
 function handle_request(req, res) {
-    
-    res.writeHead(200, {'Content-Type': 'text/plain'});
-
     url = parse_url(req.url, true);
-
-    if (url.pathname == '/signup') {
-	users.create(url.query, function(msg) { answer(msg, res); });
-    } else if (url.pathname == '/auth') {
-	users.authenticate(url.query, function(msg) { answer(msg, res); });
+    if (actions[url.pathname]) {
+	actions[url.pathname](url.query, function(code, msg) { answer(code, msg, res); });
     } else {
-	answer('Did Nothing', res);
+	answer(200, 'Did Nothing', res);
     }
 }
 
-function answer(message, res) {
+function answer(code, message, res) {
+    res.writeHead(code, {'Content-Type': 'text/plain'});
     res.end(message + '\n');
 }
 

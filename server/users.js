@@ -14,15 +14,15 @@ function create(user_data, answer) {
 	user_data.birth_date) {
 	redis.hsetnx('users', user_data.login, JSON.stringify(user_data), function(err, ret) { after_create(ret, answer); });
     } else {
-	answer('Dados Incompletos.');
+	answer(400, 'Dados Incompletos.');
     }
 }
 
 function after_create(ret, answer) {
     if (ret == 1) {
-	answer('Usuario criado.');
+	answer(201, 'Usuario criado.');
     } else {
-	answer('Usuario ja existe.');
+	answer(304, 'Usuario ja existe.');
     }
 }
 
@@ -35,11 +35,11 @@ function auth_after_get(data, ret, answer) {
 	ret_data = JSON.parse(ret);
 
 	if (data.password == ret_data.password) {
-	    answer(ret);
+	    answer(202, ret);
 	} else {
-	    answer('Senha Invalida.');
+	    answer(401, 'Senha Invalida.');
 	}
     } else {
-	answer('Usuario Invalido.');
+	answer(401, 'Usuario Invalido.');
     }
 }
