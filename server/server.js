@@ -1,6 +1,6 @@
 var http = require('http');
 var parse_url = require('url').parse;
-var users = require('./users');
+var users = require('./controllers/users');
 
 var actions = {
     '/signup' : users.create,

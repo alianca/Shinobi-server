@@ -1,5 +1,4 @@
 var redis = require('redis').createClient();
-var user = require('./models/user.js');
 
 exports.create = create;
 exports.authenticate = authenticate;
@@ -9,7 +8,12 @@ exports.authenticate = authenticate;
 function create(user_data, answer) {
     if (user_data.name && user_data.login && user_data.password && user_data.email && user_data.birth_date) {
 
-	var user = user.createUser(user_data);
+	db_entry = {
+	    'name': user_data.name,
+	    'password': user_data.password,
+	    'email': user_data.email,
+	    'birth_date': user_data.birth_date
+	}
 
 	redis.hsetnx('users', user_data.login, JSON.stringify(db_entry), function(err, ret) { after_create(ret, answer); });
 
