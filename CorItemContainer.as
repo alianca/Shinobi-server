@@ -13,7 +13,7 @@
 		public var cores:Array = [];
 		public var default_color:uint;
 		
-		public function CorItemContainer(end:String="cores") {
+		public function CorItemContainer(end:String="xml/cores") {
 			// constructor code
 			requisicao = new URLRequest(end + ".xml");
 			loader = new URLLoader();			
