@@ -31,11 +31,12 @@ function Organization(attributes) {
                     'score', this.score);
     };
     
-    this.add_member = function(rank) {
+    this.add_member = function(rank, id) {
         redis.zadd('Organizacoes:' + this.id + ':membros', rank, id);
     };
     
     this.rem_member = function(id) {
         redis.zrem('Organizacoes:' + this.id + ':membros', id);
     };
+
 }

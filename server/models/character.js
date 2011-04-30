@@ -1,4 +1,5 @@
 var redis = require('redis').createClient();
+var jutsus = require('./jutsu');
 
 exports.createCharacter = function(attributes) {
     var character = new Character(attributes);
@@ -10,7 +11,15 @@ exports.get = function(id, callback) {
     redis.hgetall('Personagens:' + id + ':atributos', function(err, ret) {
         if (ret.nome) {
             ret['id'] = id;
-            callback(new Character(ret));
+            redis.mget(['Personagens:' + id + ':vila', 
+			'Personagens:' + id + ':organizacao', 
+			'Personagens:' + id + ':guilda'], 
+		       function(err, values) {
+			    ret['vila'] = values.vila;
+			    ret['organizacao'] = values.organizacao;
+			    ret['guilda'] = values.guilda;
+			    callback(new Character(ret));
+			});
         } else {
             callback(null);
         }
@@ -18,7 +27,7 @@ exports.get = function(id, callback) {
 };
 
 function Character(attributes) {
-    
+
     this.nome = attributes.nome;
     this.exp = 0;
     this.id = attributes.id;
@@ -67,11 +76,32 @@ function Character(attributes) {
                     'Personagens:' + this.id + ':guilda', this.guilda);
     };
     
-    this.add_jutsu = function(jutsu_id, level) {
-        redis.zadd('Personagens:' + this.id + ':jutsus',  level, jutsu_id);
+    this.add_jutsu = function(jutsu, level, callback) {
+        redis.zadd('Personagens:' + this.id + ':jutsus', level, jutsu.id, function(err, ret) { callback(ret); });
     };
     
-    this.advance_jutsu = function(jutsu_id, advance_by) {
-        redis.zincrby('Personagens:' + this.id + ':jutsus', advance_by, jutsu_id);
+    this.advance_jutsu = function(jutsu_id, advance_by, callback) {
+        redis.zincrby('Personagens:' + this.id + ':jutsus', advance_by, jutsu_id, function(err, ret) { callback(ret); });
+    };
+    
+    this.get_jutsus = function(callback) {
+	my_jutsus = [];
+	redis.zrange('Personagens:' + this.id + ':jutsus', 0, -1, function(err, ret) {
+	    for (var i = 0; i < ret.length; i++) {
+		jutsus.get(ret[i], function(j) {
+		    my_jutsus.push(j);
+		    if (my_jutsus.length == ret.length) {
+			callback(my_jutsus);
+		    }
+		});
+	    }
+	});
+    };
+    
+    this.get_jutsu_properties = function(jutsu, callback) {
+	redis.zscore('Personagens:' + this.id + ':jutsus', jutsu.id, function(err, level) {
+	    console.log('Jutsu level: ' + level);
+	    jutsu.get_properties(level, callback);
+	});
     };
 }
