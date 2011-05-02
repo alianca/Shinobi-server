@@ -25,7 +25,6 @@ function Jutsu(attributes) {
     this.natureza = attributes.natureza;
     this.level_minimo = attributes.level_minimo;
     this.descricao = attributes.descricao;
-    this.nome = attributes.nome;
     this.tipo = attributes.tipo;
     this.forca = attributes.forca;
     this.cooldown = attributes.cooldown;
@@ -35,32 +34,43 @@ function Jutsu(attributes) {
     this.save = function() {
         redis.hmset('Jutsus:' + this.id + ':atributos',
                     'nome', this.nome,
-                    'exp', this.exp,
-                    'score', this.score);
+                    'natureza', this.natureza,
+                    'level_minimo', this.level_minimo,
+		    'descricao', this.descricao,
+		    'tipo', this.tipo,
+		    'forca', this.forca,
+		    'cooldown', this.cooldown,
+		    'ativacao', this.ativacao,
+		    'duracao', this.duracao);
     };
     
-    this.set_precisao = function(lv1, lv2, lv3) {
-        redis.pushl('Jutsus:' + this.id + ':precisao', lv1);
-        redis.pushl('Jutsus:' + this.id + ':precisao', lv2);
-        redis.pushl('Jutsus:' + this.id + ':precisao', lv3);
+    this.set_properties = function(precisao, critico, modificadores) {
+	redis.multi()
+            .rpush('Jutsus:' + this.id + ':precisao', precisao[0])
+            .rpush('Jutsus:' + this.id + ':precisao', precisao[1])
+            .rpush('Jutsus:' + this.id + ':precisao', precisao[2])
+            .rpush('Jutsus:' + this.id + ':critico', critico[0])
+            .rpush('Jutsus:' + this.id + ':critico', critico[1])
+            .rpush('Jutsus:' + this.id + ':critico', critico[2])
+	    .set('Jutsus:' + this.id + ':modificadores', JSON.stringify(modificadores))
     };
-    this.get_precisao = function(level) {
-        redis.lindex('Jutsus:' + this.id + ':precisao', level);
+
+    this.get_properties = function(level, callback) {
+	redis.multi()
+            .lindex('Jutsus:' + this.id + ':precisao', level)
+	    .lindex('Jutsus:' + this.id + ':critico', level)
+	    .get('Jutsus:' + this.id + ':modificadores')
+	    .exec(function(err, replies) {
+		var mods = JSON.parse(replies[2]);
+		for (var i = 0; i < mods.length; i++) {
+		    var values = mods[i].valor;
+		    mods[i].valor = values[level];
+		}
+		callback({
+		    'critico' : replies[0],
+		    'precisao' : replies[1],
+		    'modifiers' : mods
+		});
+	    });
     };
-    
-    this.set_critico = function(lv1, lv2, lv3) {
-        redis.pushl('Jutsus:' + this.id + ':critico', lv1);
-        redis.pushl('Jutsus:' + this.id + ':critico', lv2);
-        redis.pushl('Jutsus:' + this.id + ':critico', lv3);
-    };
-    this.get_critico = function(level) {
-        redis.lindex('Jutsus:' + this.id + ':critico', level);
-    };
-    
-    this.set_modifiers = function(mod_list) { // [{atributo: ..., alvo: ..., valor: [lv1,lv2,lv3]}]
-        for (var i = 0; i < mod_list.length; i++) {
-            redis.set('Jutsus:' + this.id + ':modificadores', JSON.stringify(mod_list[i]));
-        }
-    }
-    
 }
