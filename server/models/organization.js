@@ -24,19 +24,21 @@ function Organization(attributes) {
     this.score = 0;
     this.exp = 0;
     
-    this.save = function() {
+}
+
+Organization.prototype = {
+    'save': function() {
         redis.hmset('Organizacoes:' + this.id + ':atributos',
                     'nome', this.nome,
                     'exp', this.exp,
                     'score', this.score);
-    };
+    },
     
-    this.add_member = function(rank, id) {
+    'add_member': function(rank, id) {
         redis.zadd('Organizacoes:' + this.id + ':membros', rank, id);
-    };
+    },
     
-    this.rem_member = function(id) {
+    'rem_member': function(id) {
         redis.zrem('Organizacoes:' + this.id + ':membros', id);
-    };
-
+    }
 }

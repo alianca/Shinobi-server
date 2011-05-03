@@ -23,17 +23,20 @@ function Village(attributes) {
     this.id = attributes.id;
     this.counter = 0;
     
-    this.save = function() {
+}
+
+Village.prototype = {
+    'save': function() {
         redis.hmset('Vilas:' + this.id + ':atributos',
                     'nome', this.nome,
                     'counter', this.counter);
-    };
+    },
     
-    this.add_related = function(id, type) {
+    'add_related': function(id, type) {
         redis.sadd('Vilas:' + this.id + ':' + type,  id);
-    };
+    },
     
-    this.rem_related = function(id, type) {
+    'rem_related': function(id, type) {
         redis.srem('Vilas:' + this.id + ':' + type,  id);
-    };
+    }
 }

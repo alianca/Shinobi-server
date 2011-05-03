@@ -49,42 +49,45 @@ function Character(attributes) {
     this.vila = attributes.vila;
     this.organizacao = attributes.organizacao;
     this.guilda = attributes.guilda;
-    
-    this.save = function() {
+
+}
+
+Character.prototype = {
+    'save': function() {
         redis.hmset('Personagens:' + this.id + ':atributos',
-                    'nome', this.nome,
-                    'exp', this.exp,
-                    'id', this.id,
-                    'score', this.score,
-                    'dinheiro', this.dinheiro,
-                    'sexo', this.sexo,
-                    'hp', this.hp,
-                    'ninjutsu', this.ninjutsu,
-                    'genjutsu', this.genjutsu,
-                    'taijutsu', this.taijutsu,
-                    'agilidade', this.agilidade,
-                    'conhecimento', this.conhecimento,
-                    'forca', this.forca,
-                    'defesa', this.defesa,
-                    'cognicao', this.cognicao,
-                    'inteligencia', this.inteligencia,
-                    'chakra', this.chakra,
-                    'stamina', this.stamina);
-                    
-         redis.mset('Personagens:' + this.id + ':vila', this.vila,
-                    'Personagens:' + this.id + ':organizacao', this.organizacao,
-                    'Personagens:' + this.id + ':guilda', this.guilda);
-    };
+		    'nome', this.nome,
+		    'exp', this.exp,
+		    'id', this.id,
+		    'score', this.score,
+		    'dinheiro', this.dinheiro,
+		    'sexo', this.sexo,
+		    'hp', this.hp,
+		    'ninjutsu', this.ninjutsu,
+		    'genjutsu', this.genjutsu,
+		    'taijutsu', this.taijutsu,
+		    'agilidade', this.agilidade,
+		    'conhecimento', this.conhecimento,
+		    'forca', this.forca,
+		    'defesa', this.defesa,
+		    'cognicao', this.cognicao,
+		    'inteligencia', this.inteligencia,
+		    'chakra', this.chakra,
+		    'stamina', this.stamina);
+        
+        redis.mset('Personagens:' + this.id + ':vila', this.vila,
+                   'Personagens:' + this.id + ':organizacao', this.organizacao,
+                   'Personagens:' + this.id + ':guilda', this.guilda);
+    },
     
-    this.add_jutsu = function(jutsu, level, callback) {
+    'add_jutsu': function(jutsu, level, callback) {
         redis.zadd('Personagens:' + this.id + ':jutsus', level, jutsu.id, function(err, ret) { callback(ret); });
-    };
+    },
     
-    this.advance_jutsu = function(jutsu_id, advance_by, callback) {
+    'advance_jutsu': function(jutsu_id, advance_by, callback) {
         redis.zincrby('Personagens:' + this.id + ':jutsus', advance_by, jutsu_id, function(err, ret) { callback(ret); });
-    };
+    },
     
-    this.get_jutsus = function(callback) {
+    'get_jutsus': function(callback) {
 	my_jutsus = [];
 	redis.zrange('Personagens:' + this.id + ':jutsus', 0, -1, function(err, ret) {
 	    for (var i = 0; i < ret.length; i++) {
@@ -96,12 +99,12 @@ function Character(attributes) {
 		});
 	    }
 	});
-    };
+    },
     
-    this.get_jutsu_properties = function(jutsu, callback) {
+    'get_jutsu_properties': function(jutsu, callback) {
 	redis.zscore('Personagens:' + this.id + ':jutsus', jutsu.id, function(err, level) {
 	    console.log('Jutsu level: ' + level);
 	    jutsu.get_properties(level, callback);
 	});
-    };
-}
+    }
+};

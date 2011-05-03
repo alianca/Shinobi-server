@@ -24,22 +24,24 @@ function User(attributes) {
     this.senha = attributes.senha;
     this.email = attributes.email;
     this.nascimento = attributes.nascimento;
-    
-    this.save = function() {
+}
+
+User.prototype = {
+    'save': function() {
         redis.hmset('Usuarios:' + this.login + ':atributos',
                     'gold', this.gold,
                     'nome', this.nome,
                     'senha', this.senha,
                     'email', this.email,
                     'nascimento', this.nascimento);
-    };
+    },
     
-    this.add_character = function(personagem_id) {
+    'add_character': function(personagem_id) {
         redis.sadd('Usuarios:' + this.login + ':personagens', personagem_id);
-    };
+    },
     
-    this.rem_character = function(personagem_id) {
+    'rem_character': function(personagem_id) {
         redis.srem('Usuarios:' + this.login + ':personagens', personagem_id);
-    };
-}
+    }
+};
 
