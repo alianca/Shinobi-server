@@ -21,6 +21,7 @@ vows.describe('Jutsu').addBatch({
                     'id' : '111',
                     'natureza' : 'whatever',
                     'level_minimo' : '42',
+                    'requerimento_cla' : '',
                     'descricao' : 'whatever',
                     'tipo' : '',
                     'forca' : '42',

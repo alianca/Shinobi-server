@@ -11,15 +11,15 @@ exports.get = function(id, callback) {
     redis.hgetall('Personagens:' + id + ':atributos', function(err, ret) {
         if (ret.nome) {
             ret['id'] = id;
-            redis.mget(['Personagens:' + id + ':vila', 
-			'Personagens:' + id + ':organizacao', 
-			'Personagens:' + id + ':guilda'], 
+            redis.mget(['Personagens:' + id + ':vila',
+			'Personagens:' + id + ':organizacao',
+			'Personagens:' + id + ':guilda'],
 		       function(err, values) {
-			    ret['vila'] = values.vila;
-			    ret['organizacao'] = values.organizacao;
-			    ret['guilda'] = values.guilda;
-			    callback(new Character(ret));
-			});
+			   ret['vila'] = values.vila;
+			   ret['organizacao'] = values.organizacao;
+			   ret['guilda'] = values.guilda;
+			   callback(new Character(ret));
+		       });
         } else {
             callback(null);
         }
@@ -29,6 +29,7 @@ exports.get = function(id, callback) {
 function Character(attributes) {
 
     this.nome = attributes.nome;
+    this.cla = attributes.cla;
     this.exp = 0;
     this.id = attributes.id;
     this.score = 0;
@@ -76,7 +77,8 @@ Character.prototype = {
         
         redis.mset('Personagens:' + this.id + ':vila', this.vila,
                    'Personagens:' + this.id + ':organizacao', this.organizacao,
-                   'Personagens:' + this.id + ':guilda', this.guilda);
+                   'Personagens:' + this.id + ':guilda', this.guilda,
+                   'Personagens:' + this.id + ':cla', this.cla);
     },
     
     'add_jutsu': function(jutsu, level, callback) {
