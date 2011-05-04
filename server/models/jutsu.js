@@ -24,6 +24,7 @@ function Jutsu(attributes) {
     
     this.natureza = attributes.natureza;
     this.level_minimo = attributes.level_minimo;
+    this.restricao_cla = attributes.restricao_cla;
     this.descricao = attributes.descricao;
     this.tipo = attributes.tipo;
     this.forca = attributes.forca;
@@ -31,20 +32,24 @@ function Jutsu(attributes) {
     this.ativacao = attributes.ativacao;
     this.duracao = attributes.duracao;
     
-    this.save = function() {
+}
+
+Jutsu.prototype = {
+    'save': function() {
         redis.hmset('Jutsus:' + this.id + ':atributos',
                     'nome', this.nome,
                     'natureza', this.natureza,
                     'level_minimo', this.level_minimo,
+                    'restricao_cla', this.restricao_cla,
 		    'descricao', this.descricao,
 		    'tipo', this.tipo,
 		    'forca', this.forca,
 		    'cooldown', this.cooldown,
 		    'ativacao', this.ativacao,
 		    'duracao', this.duracao);
-    };
+    },
     
-    this.set_properties = function(precisao, critico, modificadores) {
+    'set_properties': function(precisao, critico, modificadores) {
 	redis.multi()
             .rpush('Jutsus:' + this.id + ':precisao', precisao[0])
             .rpush('Jutsus:' + this.id + ':precisao', precisao[1])
@@ -52,10 +57,10 @@ function Jutsu(attributes) {
             .rpush('Jutsus:' + this.id + ':critico', critico[0])
             .rpush('Jutsus:' + this.id + ':critico', critico[1])
             .rpush('Jutsus:' + this.id + ':critico', critico[2])
-	    .set('Jutsus:' + this.id + ':modificadores', JSON.stringify(modificadores))
-    };
+	    .set('Jutsus:' + this.id + ':modificadores', JSON.stringify(modificadores));
+    },
 
-    this.get_properties = function(level, callback) {
+    'get_properties': function(level, callback) {
 	redis.multi()
             .lindex('Jutsus:' + this.id + ':precisao', level)
 	    .lindex('Jutsus:' + this.id + ':critico', level)
@@ -72,5 +77,5 @@ function Jutsu(attributes) {
 		    'modifiers' : mods
 		});
 	    });
-    };
-}
+    }
+};
